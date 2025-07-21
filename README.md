@@ -11,16 +11,18 @@ Currently, two official plugins are available:
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
-### Setup guide
+## Setup guide
 
 1.  Create project using Vite + React:
-npm create vite@latest parts-store-frontend -- --template react
-cd parts-store-frontend
-npm install
+
+    $ npm create vite@latest parts-store-frontend -- --template react
+    $ cd parts-store-frontend
+    $ npm install
 
 2.  Install Tailwind CSS v3:
-npm install -D tailwindcss@3 postcss autoprefixer
-npx tailwindcss init -p
+
+    $ npm install -D tailwindcss@3 postcss autoprefixer
+    $ npx tailwindcss init -p
     
     edit 'tailwind.config.js'
 
@@ -36,11 +38,9 @@ npx tailwindcss init -p
         plugins: [],
         }
     
-    add in 'src/index.css'
+    Replace everything in 'src/index.css'
 
-        @tailwind base;
-        @tailwind components;
-        @tailwind utilities;
+        @import "tailwindcss";
 
 3.  Install shadcn/ui:
 
