@@ -9,10 +9,13 @@
         }
     ],
     "compilerOptions": {
+        "jsx": "react-jsx", // или "react-jsxdev" для dev
+        "module": "esnext",
+        "target": "esnext",
         "baseUrl": ".",
         "paths": {
             "@/*": [
-                "./src/*"
+                "*"
             ]
         }
     }
