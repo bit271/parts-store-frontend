@@ -1,113 +1,284 @@
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import ImageUploader from "./ImageUploader"
-import BrandSelect from "./BrandSelect"
-import ModelSelect from "./ModelSelect"
-import { addCar, getCars, deleteCar } from "@/api/api"
-import CarTable from "./CarTable"
+import { Card, CardContent } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import {
+    getBrands,
+    getModels,
+    getCars,
+    addCar,
+    deleteCar,
+    addBrand,
+    deleteBrand,
+    addModel,
+    deleteModel
+} from "@/api/api"
+
+interface BrandModel {
+    id: number
+    name: string
+}
 
 interface Car {
     id: number
-    name: string
     year: number
     brandName: string
     modelName: string
-    imageUrl: string
+    dateAdd: string
 }
 
 export default function AddCarForm() {
     const [name, setName] = useState("")
     const [year, setYear] = useState("")
-    const [brandId, setBrandId] = useState<number | null>(null)
-    const [modelId, setModelId] = useState<number | null>(null)
+    const [brands, setBrands] = useState<BrandModel[]>([])
+    const [models, setModels] = useState<BrandModel[]>([])
+    const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null)
+    const [selectedModelId, setSelectedModelId] = useState<number | null>(null)
     const [imageFile, setImageFile] = useState<File | null>(null)
+    const [imagePreview, setImagePreview] = useState<string>("")
     const [cars, setCars] = useState<Car[]>([])
-    const [loading, setLoading] = useState(false)
+    const [newBrandName, setNewBrandName] = useState("")
+    const [newModelName, setNewModelName] = useState("")
 
-    const fetchCars = async () => {
-        try {
-            const res = await getCars()
-            setCars(res.data)
-        } catch {
-            alert("Ошибка загрузки машин")
-        }
-    }
+    const imageInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
-        fetchCars()
+        fetchData()
     }, [])
+
+    const fetchData = async () => {
+        const [brandsRes, modelsRes, carsRes] = await Promise.all([
+            getBrands(),
+            getModels(),
+            getCars(),
+        ])
+        setBrands(brandsRes.data)
+        setModels(modelsRes.data)
+        setCars(carsRes.data)
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!brandId || !modelId) {
-            alert("Выберите бренд и модель")
-            return
-        }
-        if (!imageFile) {
-            alert("Загрузите фото")
-            return
-        }
+        if (!name || !year || !selectedBrandId || !selectedModelId || !imageFile) return
 
         const formData = new FormData()
         formData.append("name", name)
         formData.append("year", year)
-        formData.append("brandId", brandId.toString())
-        formData.append("modelId", modelId.toString())
+        formData.append("brandId", selectedBrandId.toString())
+        formData.append("modelId", selectedModelId.toString())
         formData.append("image", imageFile)
 
-        setLoading(true)
-        try {
-            await addCar(formData)
-            alert("Машина добавлена")
-            setName("")
-            setYear("")
-            setBrandId(null)
-            setModelId(null)
-            setImageFile(null)
-            fetchCars()
-        } catch {
-            alert("Ошибка при добавлении машины")
-        } finally {
-            setLoading(false)
+        await addCar(formData)
+        await fetchData()
+        setName("")
+        setYear("")
+        setSelectedBrandId(null)
+        setSelectedModelId(null)
+        setImageFile(null)
+        setImagePreview("")
+        if (imageInputRef.current) imageInputRef.current.value = ""
+    }
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setImageFile(file)
+            setImagePreview(URL.createObjectURL(file))
         }
     }
 
-    const handleDeleteCar = async (id: number) => {
-        if (!confirm("Удалить машину?")) return
-        try {
-            await deleteCar(id)
-            setCars(cars.filter(c => c.id !== id))
-        } catch {
-            alert("Ошибка при удалении машины")
+    const handleDeleteBrand = async () => {
+        if (selectedBrandId) {
+            await deleteBrand(selectedBrandId)
+            await fetchData()
+            setSelectedBrandId(null)
         }
+    }
+
+    const handleDeleteModel = async () => {
+        if (selectedModelId) {
+            await deleteModel(selectedModelId)
+            await fetchData()
+            setSelectedModelId(null)
+        }
+    }
+
+    const handleDeleteCar = async (carId: number) => {
+        await deleteCar(carId)
+        await fetchData()
+    }
+
+    const handleAddBrand = async () => {
+        if (!newBrandName.trim()) return
+        await addBrand(newBrandName)
+        await fetchData()
+        setNewBrandName("")
+    }
+
+    const handleAddModel = async () => {
+        if (!newModelName.trim()) return
+        await addModel(newModelName)
+        await fetchData()
+        setNewModelName("")
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit} className="space-y-4 p-4 rounded-xl border shadow-md max-w-2xl mx-auto">
-                <div>
-                    <Label>Название</Label>
-                    <Input value={name} onChange={e => setName(e.target.value)} required disabled={loading} />
-                </div>
-                <div>
-                    <Label>Год выпуска</Label>
-                    <Input type="number" value={year} onChange={e => setYear(e.target.value)} required disabled={loading} />
-                </div>
-                <div>
-                    <BrandSelect selectedId={brandId} onChange={setBrandId} />
-                </div>
-                <div>
-                    <ModelSelect selectedId={modelId} onChange={setModelId} />
-                </div>
-                <div>
-                    <ImageUploader image={imageFile} onImageChange={setImageFile} />
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>Добавить машину</Button>
-            </form>
+        <div className="grid gap-6 max-w-4xl mx-auto p-4">
+            <h2 className="text-2xl font-semibold">Добавление машины</h2>
+            <Card>
+                <CardContent className="space-y-4 pt-6">
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <Label>Название</Label>
+                            <Input value={name} onChange={(e) => setName(e.target.value)} />
+                        </div>
+                        <div>
+                            <Label>Год выпуска</Label>
+                            <Input
+                                value={year}
+                                onChange={(e) => setYear(e.target.value)}
+                                type="number"
+                            />
+                        </div>
 
-            <CarTable cars={cars} onDelete={handleDeleteCar} />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label>Бренд</Label>
+                                <ScrollArea className="h-32 border rounded-md">
+                                    <ul>
+                                        {brands.map((b) => (
+                                            <li
+                                                key={b.id}
+                                                className={`px-2 py-1 cursor-pointer ${selectedBrandId === b.id ? "bg-blue-100" : ""
+                                                    }`}
+                                                onClick={() => setSelectedBrandId(b.id)}
+                                            >
+                                                {b.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </ScrollArea>
+                                <div className="flex gap-2 mt-2">
+                                    <Input
+                                        placeholder="Новый бренд"
+                                        value={newBrandName}
+                                        onChange={(e) => setNewBrandName(e.target.value)}
+                                    />
+                                    <Button onClick={handleAddBrand} type="button">
+                                        Добавить
+                                    </Button>
+                                </div>
+                                <Button
+                                    variant="destructive"
+                                    className="mt-2"
+                                    onClick={handleDeleteBrand}
+                                    type="button"
+                                >
+                                    Удалить выбранный бренд
+                                </Button>
+                            </div>
+
+                            <div>
+                                <Label>Модель</Label>
+                                <ScrollArea className="h-32 border rounded-md">
+                                    <ul>
+                                        {models.map((m) => (
+                                            <li
+                                                key={m.id}
+                                                className={`px-2 py-1 cursor-pointer ${selectedModelId === m.id ? "bg-blue-100" : ""
+                                                    }`}
+                                                onClick={() => setSelectedModelId(m.id)}
+                                            >
+                                                {m.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </ScrollArea>
+                                <div className="flex gap-2 mt-2">
+                                    <Input
+                                        placeholder="Новая модель"
+                                        value={newModelName}
+                                        onChange={(e) => setNewModelName(e.target.value)}
+                                    />
+                                    <Button onClick={handleAddModel} type="button">
+                                        Добавить
+                                    </Button>
+                                </div>
+                                <Button
+                                    variant="destructive"
+                                    className="mt-2"
+                                    onClick={handleDeleteModel}
+                                    type="button"
+                                >
+                                    Удалить выбранную модель
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <Label>Изображение</Label>
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                ref={imageInputRef}
+                            />
+                            {imagePreview && (
+                                <img
+                                    src={imagePreview}
+                                    alt="preview"
+                                    className="h-32 mt-2 rounded"
+                                />
+                            )}
+                        </div>
+
+                        <Button type="submit">Добавить</Button>
+                    </form>
+                </CardContent>
+            </Card>
+
+            <div>
+                <h3 className="text-xl font-semibold mt-6">Список автомобилей</h3>
+                <Separator className="my-2" />
+                <div className="overflow-x-auto">
+                    <table className="min-w-full table-auto border-collapse border border-gray-300">
+                        <thead>
+                            <tr className="bg-gray-100">
+                                <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
+                                <th className="border border-gray-300 px-4 py-2 text-left">Марка</th>
+                                <th className="border border-gray-300 px-4 py-2 text-left">Модель</th>
+                                <th className="border border-gray-300 px-4 py-2 text-left">Год</th>
+                                <th className="border border-gray-300 px-4 py-2 text-left">Дата добавления</th>
+                                <th className="border border-gray-300 px-4 py-2 text-left">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {cars.map((car) => (
+                                <tr key={car.id} className="hover:bg-gray-50">
+                                    <td className="border border-gray-300 px-4 py-2">{car.id}</td>
+                                    <td className="border border-gray-300 px-4 py-2">{car.brandName}</td>
+                                    <td className="border border-gray-300 px-4 py-2">{car.modelName}</td>
+                                    <td className="border border-gray-300 px-4 py-2">{car.year}</td>
+                                    <td className="border border-gray-300 px-4 py-2">{car.dateAdd}</td>
+                                    <td className="border border-gray-300 px-4 py-2">
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => handleDeleteCar(car.id)}
+                                        >
+                                            Удалить
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     )
 }
