@@ -31,7 +31,7 @@ interface Car {
 }
 
 export default function AddCarForm() {
-    const [name, setName] = useState("")
+    const [description, setDescription] = useState("")
     const [year, setYear] = useState("")
     const [brands, setBrands] = useState<BrandModel[]>([])
     const [models, setModels] = useState<BrandModel[]>([])
@@ -62,10 +62,10 @@ export default function AddCarForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!name || !year || !selectedBrandId || !selectedModelId || !imageFile) return
+        if (!description || !year || !selectedBrandId || !selectedModelId || !imageFile) return
 
         const formData = new FormData()
-        formData.append("name", name)
+        formData.append("description", description)
         formData.append("year", year)
         formData.append("brandId", selectedBrandId.toString())
         formData.append("modelId", selectedModelId.toString())
@@ -73,7 +73,7 @@ export default function AddCarForm() {
 
         await addCar(formData)
         await fetchData()
-        setName("")
+        setDescription("")
         setYear("")
         setSelectedBrandId(null)
         setSelectedModelId(null)
@@ -132,8 +132,8 @@ export default function AddCarForm() {
                 <CardContent className="space-y-4 pt-6">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <Label>Название</Label>
-                            <Input value={name} onChange={(e) => setName(e.target.value)} />
+                            <Label>Описание</Label>
+                            <Input value={description} onChange={(e) => setDescription(e.target.value)} />
                         </div>
                         <div>
                             <Label>Год выпуска</Label>
@@ -241,29 +241,29 @@ export default function AddCarForm() {
             </Card>
 
             <div>
-                <h3 className="text-xl font-semibold mt-6">Список автомобилей</h3>
+                <h3 className="text-xl font-semibold mt-6 text-center">Список автомобилей</h3>
                 <Separator className="my-2" />
                 <div className="overflow-x-auto">
-                    <table className="min-w-full table-auto border-collapse border border-gray-300">
+                    <table className="min-w-full table-auto border-collapse border border-gray-300 text-center">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
-                                <th className="border border-gray-300 px-4 py-2 text-left">Марка</th>
-                                <th className="border border-gray-300 px-4 py-2 text-left">Модель</th>
-                                <th className="border border-gray-300 px-4 py-2 text-left">Год</th>
-                                <th className="border border-gray-300 px-4 py-2 text-left">Дата добавления</th>
-                                <th className="border border-gray-300 px-4 py-2 text-left">Действия</th>
+                                <th className="border border-gray-300 px-4 py-2">ID</th>
+                                <th className="border border-gray-300 px-4 py-2">Марка</th>
+                                <th className="border border-gray-300 px-4 py-2">Модель</th>
+                                <th className="border border-gray-300 px-4 py-2">Год</th>
+                                <th className="border border-gray-300 px-4 py-2">Дата добавления</th>
+                                <th className="border border-gray-300 px-4 py-2">Действия</th>
                             </tr>
                         </thead>
                         <tbody>
                             {cars.map((car) => (
                                 <tr key={car.id} className="hover:bg-gray-50">
-                                    <td className="border border-gray-300 px-4 py-2">{car.id}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{car.brandName}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{car.modelName}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{car.year}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{car.dateAdd}</td>
-                                    <td className="border border-gray-300 px-4 py-2">
+                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.id}</td>
+                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.brandName}</td>
+                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.modelName}</td>
+                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.year}</td>
+                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.dateAdd}</td>
+                                    <td className="border border-gray-300 px-4 py-2 align-middle">
                                         <Button
                                             variant="destructive"
                                             size="sm"
@@ -278,6 +278,7 @@ export default function AddCarForm() {
                     </table>
                 </div>
             </div>
+
 
         </div>
     )
