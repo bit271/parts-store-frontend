@@ -224,20 +224,42 @@ export default function AddCarForm() {
 
                         <div>
                             <Label>Изображение</Label>
-                            <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                ref={imageInputRef}
-                            />
-                            {imagePreview && (
-                                <img
-                                    src={imagePreview}
-                                    alt="preview"
-                                    className="h-32 mt-2 rounded"
+                            <div className="mt-1 flex items-center gap-4">
+                                <label
+                                    htmlFor="image-upload"
+                                    className="cursor-pointer rounded-md border border-dashed border-gray-400 px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 transition"
+                                >
+                                    Выбрать файл
+                                </label>
+                                <input
+                                    id="image-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    ref={imageInputRef}
+                                    className="hidden"
                                 />
+                                {imageFile && (
+                                    <span
+                                        className="text-sm text-gray-700 truncate max-w-xs"
+                                        title={imageFile.name}
+                                    >
+                                        {imageFile.name}
+                                    </span>
+                                )}
+                            </div>
+
+                            {imagePreview && (
+                                <div className="mt-4 w-full max-w-xl h-auto border rounded-xl overflow-hidden shadow-md">
+                                    <img
+                                        src={imagePreview}
+                                        alt="preview"
+                                        className="w-full h-auto object-contain bg-white"
+                                    />
+                                </div>
                             )}
                         </div>
+
 
                         <Button type="submit">Добавить</Button>
                     </form>
