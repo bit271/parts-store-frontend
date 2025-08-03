@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import {
     getBrands,
     getModels,
@@ -14,7 +13,7 @@ import {
     addBrand,
     deleteBrand,
     addModel,
-    deleteModel
+    deleteModel,
 } from "@/api/api"
 
 interface BrandModel {
@@ -28,6 +27,8 @@ interface Car {
     brandName: string
     modelName: string
     dateAdd: string
+    description: string
+    imageName: string
 }
 
 export default function AddCarForm() {
@@ -40,10 +41,12 @@ export default function AddCarForm() {
     const [imageFile, setImageFile] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string>("")
     const [cars, setCars] = useState<Car[]>([])
+    const [selectedCarId, setSelectedCarId] = useState<number | null>(null)
     const [newBrandName, setNewBrandName] = useState("")
     const [newModelName, setNewModelName] = useState("")
 
     const imageInputRef = useRef<HTMLInputElement>(null)
+    const selectedCar = cars.find((car) => car.id === selectedCarId)
 
     useEffect(() => {
         fetchData()
@@ -109,6 +112,7 @@ export default function AddCarForm() {
     const handleDeleteCar = async (carId: number) => {
         await deleteCar(carId)
         await fetchData()
+        setSelectedCarId(null)
     }
 
     const handleAddBrand = async () => {
@@ -126,8 +130,8 @@ export default function AddCarForm() {
     }
 
     return (
-        <div className="grid gap-6 max-w-4xl mx-auto p-4">
-            <h2 className="text-2xl font-semibold">Добавление машины</h2>
+        <div className="grid gap-6 max-w-6xl mx-auto p-4">
+            <h2 className="text-2xl font-semibold">Добавление авто</h2>
             <Card>
                 <CardContent className="space-y-4 pt-6">
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -240,46 +244,48 @@ export default function AddCarForm() {
                 </CardContent>
             </Card>
 
-            <div>
-                <h3 className="text-xl font-semibold mt-6 text-center">Список автомобилей</h3>
-                <Separator className="my-2" />
-                <div className="overflow-x-auto">
-                    <table className="min-w-full table-auto border-collapse border border-gray-300 text-center">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border border-gray-300 px-4 py-2">ID</th>
-                                <th className="border border-gray-300 px-4 py-2">Марка</th>
-                                <th className="border border-gray-300 px-4 py-2">Модель</th>
-                                <th className="border border-gray-300 px-4 py-2">Год</th>
-                                <th className="border border-gray-300 px-4 py-2">Дата добавления</th>
-                                <th className="border border-gray-300 px-4 py-2">Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div className="grid grid-cols-2 gap-6">
+                <div>
+                    <h3 className="text-xl font-semibold mt-6">Список автомобилей</h3>
+                    <ScrollArea className="h-64 border rounded-md mt-2">
+                        <ul>
                             {cars.map((car) => (
-                                <tr key={car.id} className="hover:bg-gray-50">
-                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.id}</td>
-                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.brandName}</td>
-                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.modelName}</td>
-                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.year}</td>
-                                    <td className="border border-gray-300 px-4 py-2 align-middle">{car.dateAdd}</td>
-                                    <td className="border border-gray-300 px-4 py-2 align-middle">
-                                        <Button
-                                            variant="destructive"
-                                            size="sm"
-                                            onClick={() => handleDeleteCar(car.id)}
-                                        >
-                                            Удалить
-                                        </Button>
-                                    </td>
-                                </tr>
+                                <li
+                                    key={car.id}
+                                    onClick={() => setSelectedCarId(car.id)}
+                                    className={`px-3 py-2 border-b cursor-pointer hover:bg-gray-100 ${selectedCarId === car.id ? "bg-blue-100" : ""}`}
+                                >
+                                    <div className="font-medium">{car.brandName} {car.modelName}</div>
+                                    <div className="text-sm text-gray-500">Год: {car.year}</div>
+                                    <div className="text-sm text-gray-400">Добавлено: {car.dateAdd}</div>
+                                </li>
                             ))}
-                        </tbody>
-                    </table>
+                        </ul>
+                    </ScrollArea>
                 </div>
+
+                {selectedCar && (
+                    <div className="space-y-4 mt-6">
+                        <h4 className="text-xl font-semibold">Информация о машине</h4>
+                        <div><strong>Марка:</strong> {selectedCar.brandName}</div>
+                        <div><strong>Модель:</strong> {selectedCar.modelName}</div>
+                        <div><strong>Год:</strong> {selectedCar.year}</div>
+                        <div><strong>Дата добавления:</strong> {selectedCar.dateAdd}</div>
+                        <div><strong>Описание:</strong> {selectedCar.description}</div>
+                        <img
+                            src={`${import.meta.env.VITE_API_BASE_URL}/uploads/cars/${selectedCar.imageName}`}
+                            alt="preview"
+                            className="h-48 rounded border"
+                        />
+                        <Button
+                            variant="destructive"
+                            onClick={() => handleDeleteCar(selectedCar.id)}
+                        >
+                            Удалить
+                        </Button>
+                    </div>
+                )}
             </div>
-
-
         </div>
     )
 }
