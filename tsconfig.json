@@ -1,19 +1,23 @@
+// tsconfig.json — базовый корневой конфиг, может служить главным файлом 
+// с базовыми настройками или с references для разных частей проекта.
 {
-    "files": [],
-    "references": [
-        {
-            "path": "./tsconfig.app.json"
-        },
-        {
-            "path": "./tsconfig.node.json"
-        }
-    ],
     "compilerOptions": {
+        "jsx": "react-jsx",
+        "module": "esnext",
+        "target": "esnext",
         "baseUrl": ".",
         "paths": {
             "@/*": [
-                "./src/*"
+                "src/*"
             ]
-        }
-    }
+        },
+        "moduleResolution": "node",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "src"
+    ]
 }
