@@ -8,6 +8,7 @@ export interface Brand {
 
 export interface Model {
   id: number;
+  brandId: number;
   name: string;
 }
 
@@ -36,7 +37,7 @@ export const deleteBrand = (id: number) => api.delete(`/brands/${id}`);
 
 // MODELS
 export const getModels = () => api.get<Model[]>('/models');
-export const addModel = (name: string) => api.post<Model>('/models', { name });
+export const addModel = (name: string, brandId: number) => api.post<Model>('/models', { name, brandId });
 export const deleteModel = (id: number) => api.delete(`/models/${id}`);
 
 // CARS

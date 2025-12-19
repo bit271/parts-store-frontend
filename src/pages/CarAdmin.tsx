@@ -7,7 +7,6 @@ import { CarsList } from '@/components/Car/CarsList';
 export default function CarAdmin() {
   const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null);
   const [selectedModelId, setSelectedModelId] = useState<number | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -19,11 +18,13 @@ export default function CarAdmin() {
           selectedBrandId={selectedBrandId}
           onBrandSelect={setSelectedBrandId}
         />
-        {/* <ModelManagement
+        <ModelManagement
+          selectedBrandId={selectedBrandId}
+          onBrandSelect={setSelectedBrandId}
           selectedModelId={selectedModelId}
           onModelSelect={setSelectedModelId}
         />
-        <CarForm
+        {/* <CarForm
           selectedBrandId={selectedBrandId}
           selectedModelId={selectedModelId}
           onCarAdded={handleCarAdded}

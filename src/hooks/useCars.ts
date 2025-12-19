@@ -8,7 +8,6 @@ let carsLoadingPromise: Promise<Car[]> | null = null;
 export function useCars() {
   const [cars, setCars] = useState<Car[]>(carsCache || []);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const hasInitialized = useRef(false);
 
   const loadCars = useCallback(async () => {
@@ -24,7 +23,6 @@ export function useCars() {
     }
 
     setLoading(true);
-    setError(null);
 
     carsLoadingPromise = getCars()
       .then(({ data }) => {
@@ -33,7 +31,6 @@ export function useCars() {
         return data;
       })
       .catch((err) => {
-        setError('Не удалось загрузить автомобили');
         console.error('Failed to load cars:', err);
         throw err;
       })
@@ -53,7 +50,6 @@ export function useCars() {
     image: File;
   }) => {
     setLoading(true);
-    setError(null);
     try {
       const form = new FormData();
       form.append('description', carData.description);
@@ -68,7 +64,6 @@ export function useCars() {
       carsLoadingPromise = null;
       await loadCars();
     } catch (err) {
-      setError('Не удалось добавить автомобиль');
       console.error('Failed to add car:', err);
       throw err;
     } finally {
@@ -87,7 +82,6 @@ export function useCars() {
   return {
     cars,
     loading,
-    error,
     loadCars,
     addCar,
   };

@@ -30,18 +30,18 @@ export function BrandManagement({ selectedBrandId, onBrandSelect }: BrandManagem
       await addBrand(newBrandName);
       setNewBrandName('');
     } catch (error) {
-      alert('Не удалось добавить бренд');
+      alert('Add brand error!');
     }
   };
 
   const handleDeleteBrand = async () => {
     if (!selectedBrandId) return;
-    if (!confirm('Вы уверены, что хотите удалить выбранный бренд?')) return;
+    if (!confirm('Are you sure?')) return;
     try {
       await deleteBrand(selectedBrandId);
       onBrandSelect(null);
     } catch (error) {
-      alert('Не удалось удалить бренд');
+      alert('Delete brand error!');
     }
   };
 

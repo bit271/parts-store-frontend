@@ -8,7 +8,7 @@ let modelsLoadingPromise: Promise<Model[]> | null = null;
 export function useModels() {
   const [models, setModels] = useState<Model[]>(modelsCache || []);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
   const hasInitialized = useRef(false);
 
   const loadModels = useCallback(async () => {
@@ -24,7 +24,6 @@ export function useModels() {
     }
 
     setLoading(true);
-    setError(null);
 
     modelsLoadingPromise = getModels()
       .then(({ data }) => {
@@ -33,7 +32,6 @@ export function useModels() {
         return data;
       })
       .catch((err) => {
-        setError('Не удалось загрузить модели');
         console.error('Failed to load models:', err);
         throw err;
       })
@@ -45,15 +43,17 @@ export function useModels() {
     return modelsLoadingPromise;
   }, []);
 
-  const addModel = useCallback(async (name: string) => {
+  const addModel = useCallback(async (modelData: {
+    name: string
+    brandId: number
+  }) => {
     try {
-      await addModelApi(name.trim());
+      await addModelApi(modelData.name, modelData.brandId);
       // Clear cache to force refresh
       modelsCache = null;
       modelsLoadingPromise = null;
       await loadModels();
     } catch (err) {
-      setError('Не удалось добавить модель');
       console.error('Failed to add model:', err);
       throw err;
     }
@@ -67,7 +67,6 @@ export function useModels() {
       modelsLoadingPromise = null;
       await loadModels();
     } catch (err) {
-      setError('Не удалось удалить модель');
       console.error('Failed to delete model:', err);
       throw err;
     }
@@ -84,7 +83,6 @@ export function useModels() {
   return {
     models,
     loading,
-    error,
     loadModels,
     addModel,
     deleteModel,

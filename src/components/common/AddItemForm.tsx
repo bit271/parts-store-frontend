@@ -29,9 +29,8 @@ export function AddItemForm({
             if (e.key === 'Enter') onSubmit();
           }}
         />
-        <Button onClick={onSubmit}>Добавить</Button>
+        <Button onClick={onSubmit}>Add</Button>
       </div>
     </div>
   );
 }
-
