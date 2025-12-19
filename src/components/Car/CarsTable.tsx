@@ -22,26 +22,21 @@ export function CarsTable({ cars }: CarsTableProps) {
     }
   }, [cars]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU');
-  };
-
   return (
     <div className="border rounded-md">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Автомобиль</TableHead>
-            <TableHead>Год</TableHead>
-            <TableHead>Добавлено</TableHead>
+            <TableHead>Car name</TableHead>
+            <TableHead>Year of manufacture</TableHead>
+            <TableHead>Added date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {carsState.length === 0 ? (
             <TableRow>
               <TableCell colSpan={3} className="text-center text-muted-foreground">
-                Нет автомобилей
+                No cars.
               </TableCell>
             </TableRow>
           ) : (
@@ -51,7 +46,7 @@ export function CarsTable({ cars }: CarsTableProps) {
                   {car.brandName} {car.modelName}
                 </TableCell>
                 <TableCell>{car.year}</TableCell>
-                <TableCell>{formatDate(car.addDate)}</TableCell>
+                <TableCell>{car.dateAdd}</TableCell>
               </TableRow>
             ))
           )}

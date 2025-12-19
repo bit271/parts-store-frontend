@@ -60,7 +60,7 @@ export function BrandManagement({ selectedBrandId, onBrandSelect }: BrandManagem
           />
         </div>
         <div className="space-y-2">
-          <Label>Brands</Label>
+          <Label>Brands:</Label>
           <SelectableList
             items={filteredBrands}
             selectedId={selectedBrandId}

@@ -71,7 +71,7 @@ export function ModelManagement({ selectedBrandId, onBrandSelect, selectedModelI
           />
         </div>
         <div className="space-y-2">
-          <Label>Model</Label>
+          <Label>Models:</Label>
           <SelectableList
             items={filteredModels}
             selectedId={selectedModelId}

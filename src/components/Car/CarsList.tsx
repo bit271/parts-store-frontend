@@ -4,19 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCars } from '@/hooks/useCars';
 import { CarsTable } from '@/components/Car/CarsTable';
 
-interface CarsListProps {
-  refreshTrigger?: number;
-}
-
-export function CarsList({ refreshTrigger }: CarsListProps) {
-  const { cars, loadCars } = useCars();
+export function CarsList() {
+  const { cars } = useCars();
   const [carSearch, setCarSearch] = useState('');
-
-  useEffect(() => {
-    if (refreshTrigger !== undefined) {
-      loadCars();
-    }
-  }, [refreshTrigger, loadCars]);
 
   const filteredCars = useMemo(() => {
     if (!carSearch) return cars;
@@ -32,12 +22,12 @@ export function CarsList({ refreshTrigger }: CarsListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Список автомобилей</CardTitle>
+        <CardTitle>Cars list</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <Input
-            placeholder="Поиск по названию, бренду или году..."
+            placeholder="Search by name, brand or year of manufacture"
             value={carSearch}
             onChange={(e) => setCarSearch(e.target.value)}
           />

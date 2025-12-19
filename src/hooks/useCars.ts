@@ -8,6 +8,7 @@ let carsLoadingPromise: Promise<Car[]> | null = null;
 export function useCars() {
   const [cars, setCars] = useState<Car[]>(carsCache || []);
   const [loading, setLoading] = useState(false);
+
   const hasInitialized = useRef(false);
 
   const loadCars = useCallback(async () => {
@@ -47,7 +48,7 @@ export function useCars() {
     year: number;
     brandId: number;
     modelId: number;
-    image: File;
+    image?: File;
   }) => {
     setLoading(true);
     try {
@@ -56,9 +57,11 @@ export function useCars() {
       form.append('year', carData.year.toString());
       form.append('brandId', carData.brandId.toString());
       form.append('modelId', carData.modelId.toString());
-      form.append('image', carData.image);
-
+      if (carData.image) {
+        form.append('image', carData.image);
+      }
       await addCarApi(form);
+
       // Clear cache to force refresh on next load
       carsCache = null;
       carsLoadingPromise = null;

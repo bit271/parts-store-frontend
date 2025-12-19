@@ -18,7 +18,7 @@ export interface Car {
   modelName: string;
   year: number;
   description: string;
-  addDate: string;
+  dateAdd: string;
   imageUrl?: string;
 }
 

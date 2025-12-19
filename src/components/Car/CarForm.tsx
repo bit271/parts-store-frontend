@@ -3,17 +3,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useCars } from '@/hooks/useCars';
 import { ImageUpload } from '@/components/common/ImageUpload';
 
 interface CarFormProps {
   selectedBrandId: number | null;
   selectedModelId: number | null;
-  onCarAdded: () => void;
+  //onCarAdded: () => void;
 }
 
-export function CarForm({ selectedBrandId, selectedModelId, onCarAdded }: CarFormProps) {
+export function CarForm({ selectedBrandId, selectedModelId }: CarFormProps) {
   const { addCar, loading } = useCars();
   const [year, setYear] = useState<number | ''>('');
   const [description, setDescription] = useState('');
@@ -21,40 +21,41 @@ export function CarForm({ selectedBrandId, selectedModelId, onCarAdded }: CarFor
   const [imageUploadKey, setImageUploadKey] = useState(0);
 
   const handleAddCar = async () => {
-    if (!selectedBrandId || !selectedModelId || !year || !selectedImage) {
-      alert('Заполните все обязательные поля');
+    if (!selectedBrandId || !selectedModelId || !year) {
+      alert('Select at least brand, model and year!');
       return;
     }
     try {
-      await addCar({
+      const carData = {
         brandId: selectedBrandId,
         modelId: selectedModelId,
         year: Number(year),
         description: description.trim(),
-        image: selectedImage,
-      });
+        ...(selectedImage && { image: selectedImage }),
+      };
+
+      await addCar(carData);
       // Reset form
       setYear('');
       setDescription('');
       setSelectedImage(null);
       setImageUploadKey((prev) => prev + 1); // Force ImageUpload to reset
-      onCarAdded();
     } catch (error) {
-      alert('Не удалось добавить автомобиль');
+      alert('Add car error!');
     }
   };
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Детали автомобиля</CardTitle>
-      </CardHeader>
+      {/* <CardHeader>
+        <CardTitle>Other info</CardTitle>
+      </CardHeader> */}
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Год выпуска</Label>
+          <Label>Year of manufacture</Label>
           <Input
             type="number"
-            placeholder="Год"
+            placeholder="Year"
             value={year}
             onChange={(e) => {
               const value = e.target.value;
@@ -65,9 +66,9 @@ export function CarForm({ selectedBrandId, selectedModelId, onCarAdded }: CarFor
           />
         </div>
         <div className="space-y-2">
-          <Label>Описание</Label>
+          <Label>Description</Label>
           <Textarea
-            placeholder="Введите описание..."
+            placeholder="Enter description..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={6}
@@ -76,10 +77,10 @@ export function CarForm({ selectedBrandId, selectedModelId, onCarAdded }: CarFor
         <ImageUpload key={imageUploadKey} onImageChange={setSelectedImage} />
         <Button
           onClick={handleAddCar}
-          disabled={loading || !selectedBrandId || !selectedModelId || !year || !selectedImage}
+          disabled={loading || !selectedBrandId || !selectedModelId || !year}
           className="w-full"
         >
-          {loading ? 'Добавление...' : 'Добавить'}
+          {loading ? 'Adding...' : 'Add car'}
         </Button>
       </CardContent>
     </Card>
