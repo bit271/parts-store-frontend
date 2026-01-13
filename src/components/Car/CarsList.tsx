@@ -1,11 +1,10 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCars } from '@/hooks/useCars';
 import { CarsTable } from '@/components/Car/CarsTable';
+import { type Car } from '@/api/api';
 
-export function CarsList() {
-  const { cars } = useCars();
+export function CarsList({ cars }: { cars: Car[] }) {
   const [carSearch, setCarSearch] = useState('');
 
   const filteredCars = useMemo(() => {

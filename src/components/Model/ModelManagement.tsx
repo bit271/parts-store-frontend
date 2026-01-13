@@ -14,7 +14,7 @@ interface ModelManagementProps {
   onModelSelect: (id: number | null) => void;
 }
 
-export function ModelManagement({ selectedBrandId, onBrandSelect, selectedModelId, onModelSelect }: ModelManagementProps) {
+export function ModelManagement({ selectedBrandId, selectedModelId, onModelSelect }: ModelManagementProps) {
   // const { models, addModel, deleteModel } = useModels();
   const { models, addModel, deleteModel } = useModels();
   const [modelSearch, setModelSearch] = useState('');

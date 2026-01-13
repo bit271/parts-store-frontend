@@ -3,11 +3,12 @@ import { BrandManagement } from '@/components/Brand/BrandManagement';
 import { ModelManagement } from '@/components/Model/ModelManagement';
 import { CarForm } from '@/components/Car/CarForm';
 import { CarsList } from '@/components/Car/CarsList';
+import { useCars } from '@/hooks/useCars';
 
 export default function CarAdmin() {
   const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null);
   const [selectedModelId, setSelectedModelId] = useState<number | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(false)
+  const carsState = useCars();
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -28,12 +29,14 @@ export default function CarAdmin() {
         <CarForm
           selectedBrandId={selectedBrandId}
           selectedModelId={selectedModelId}
+          addCar={carsState.addCar}
+          loading={carsState.loading}
         />
 
       </div>
 
       {/* Cars list section */}
-      <CarsList />
+      <CarsList cars={carsState.cars} />
     </div>
   );
 }

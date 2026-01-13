@@ -33,7 +33,7 @@ export function ImageUpload({ onImageChange }: ImageUploadProps) {
 
   return (
     <div className="space-y-2">
-      <Label>Изображение</Label>
+      <Label>Picture</Label>
       <Input
         id="car-image-input"
         type="file"

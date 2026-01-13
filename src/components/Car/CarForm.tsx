@@ -4,17 +4,17 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { useCars } from '@/hooks/useCars';
 import { ImageUpload } from '@/components/common/ImageUpload';
+import type { AddCarDto } from '@/types/AddCarDto';
 
 interface CarFormProps {
   selectedBrandId: number | null;
   selectedModelId: number | null;
-  //onCarAdded: () => void;
+  addCar: (data: AddCarDto) => Promise<void>;
+  loading: boolean;
 }
 
-export function CarForm({ selectedBrandId, selectedModelId }: CarFormProps) {
-  const { addCar, loading } = useCars();
+export function CarForm({ selectedBrandId, selectedModelId, addCar, loading }: CarFormProps) {
   const [year, setYear] = useState<number | ''>('');
   const [description, setDescription] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -47,9 +47,6 @@ export function CarForm({ selectedBrandId, selectedModelId }: CarFormProps) {
 
   return (
     <Card>
-      {/* <CardHeader>
-        <CardTitle>Other info</CardTitle>
-      </CardHeader> */}
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label>Year of manufacture</Label>
