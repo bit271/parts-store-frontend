@@ -1,8 +1,11 @@
+import { cn } from "@/lib/utils";
+
 interface SelectableListProps<T extends { id: number; name: string }> {
   items: T[];
   selectedId: number | null;
   onSelect: (id: number) => void;
   emptyMessage: string;
+  className?: string;
 }
 
 export function SelectableList<T extends { id: number; name: string }>({
@@ -10,11 +13,12 @@ export function SelectableList<T extends { id: number; name: string }>({
   selectedId,
   onSelect,
   emptyMessage,
+  className,
 }: SelectableListProps<T>) {
   const safeItems = Array.isArray(items) ? items : [];
 
   return (
-    <div className="border rounded-md h-48 overflow-y-auto">
+    <div className={cn("border rounded-md h-48 overflow-y-auto", className)}>
       {safeItems.length === 0 ? (
         <div className="p-4 text-sm text-muted-foreground text-center">
           {emptyMessage}

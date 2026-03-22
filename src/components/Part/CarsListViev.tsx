@@ -14,7 +14,6 @@ interface CarsListVievProps {
 export function CarsListViev({ cars, selectedCarId, onCarSelect }: CarsListVievProps) {
     const [carSearch, setCarSearch] = useState('');
 
-
     const filteredCars = useMemo(() => {
         if (!carSearch) return cars;
         const searchLower = carSearch.toLowerCase();
@@ -29,7 +28,7 @@ export function CarsListViev({ cars, selectedCarId, onCarSelect }: CarsListVievP
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Cars list</CardTitle>
+                <CardTitle>Cars:</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-5">
@@ -38,8 +37,7 @@ export function CarsListViev({ cars, selectedCarId, onCarSelect }: CarsListVievP
                         value={carSearch}
                         onChange={(e) => setCarSearch(e.target.value)}
                     />
-                    <div className="space-y-3">
-                        <Label>Cars:</Label>
+                    <div className="space-y-3 ">
                         <SelectableList
                             items={filteredCars.map((c) => ({
                                 id: c.id,
@@ -48,6 +46,7 @@ export function CarsListViev({ cars, selectedCarId, onCarSelect }: CarsListVievP
                             selectedId={selectedCarId}
                             onSelect={onCarSelect}
                             emptyMessage="No cars found"
+                            className="h-122"
                         />
                     </div>
                 </div>
