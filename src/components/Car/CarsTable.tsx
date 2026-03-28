@@ -76,7 +76,7 @@ export function CarsTable({ cars }: CarsTableProps) {
                 </TableCell>
                 <TableCell>
                   <button
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                    className="text-red-500 hover:text-red-600 text-sm font-medium"
                     onClick={() => handleDelete(car.id)}
                   >
                     Delete

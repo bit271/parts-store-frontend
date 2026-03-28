@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { CarsListViev } from '@/components/Part/CarsListViev';
-import { CategoryManagement } from '@/components/Category/CategoryManagement.tsx'
+import { CategoryManagement } from '@/components/Category/CategoryManagement.tsx';
 import { useCars } from '@/hooks/useCars';
 import { useParts } from '@/hooks/useParts';
 import { PartForm } from '@/components/Part/PartForm';
+import { PartsList } from '@/components/Part/PartsList';
 
 export default function PartAdmin() {
     const [selectedCarId, setSelectedCarId] = useState<number | null>(null);
@@ -33,7 +34,12 @@ export default function PartAdmin() {
                     loading={carsState.loading}
                 />
             </div>
+
+            {/* Parts list section */}
+            <PartsList
+                parts={partsState.parts}
+            />
+
         </div>
     );
 }
-

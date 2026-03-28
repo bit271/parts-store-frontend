@@ -29,9 +29,9 @@ export interface Car {
 
 export interface Part {
   id: number;
-  carId: number;
-  categoryId: number;
   name: string;
+  carName: string;
+  categoryName: string;
   availableCount: number;
   price: number;
   catalogNum: string;

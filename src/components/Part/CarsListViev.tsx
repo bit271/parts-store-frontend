@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SelectableList } from '@/components/common/SelectableList';
 import { type Car } from '@/api/api';
