@@ -30,8 +30,9 @@ _Will be added soon_
 ## 📸 Screenshots
 
 ### Admin page
-![Admin Page](screenshots/admin_page.png)
-![Admin Page add car](screenshots/admin_page_add.png)
+![Admin car](screenshots/admin_car.png)
+![Admin car add](screenshots/admin_car_add.png)
+![Admin part](screenshots/admin_part.png)
 
 ## 📝 Future tasks
 

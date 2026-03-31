@@ -12,6 +12,11 @@ export interface Model {
   name: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+}
+
 export interface Car {
   id: number;
   brandName: string;
@@ -20,6 +25,18 @@ export interface Car {
   description: string;
   dateAdd: string;
   imageUrl?: string;
+}
+
+export interface Part {
+  id: number;
+  name: string;
+  carName: string;
+  categoryName: string;
+  availableCount: number;
+  price: number;
+  catalogNum: string;
+  description: string;
+  image?: File;
 }
 
 // Create single axios instance
@@ -40,6 +57,11 @@ export const getModels = () => api.get<Model[]>('/models');
 export const addModel = (name: string, brandId: number) => api.post<Model>('/models', { name, brandId });
 export const deleteModel = (id: number) => api.delete(`/models/${id}`);
 
+// CATEGORIES
+export const getCategories = () => api.get<Category[]>('/categories');
+export const addCategory = (name: string) => api.post<Brand>('/categories', { name });
+export const deleteCategory = (id: number) => api.delete(`/categories/${id}`);
+
 // CARS
 export const getCars = () => api.get<Car[]>('/cars');
 export const addCar = (formData: FormData) =>
@@ -48,3 +70,10 @@ export const addCar = (formData: FormData) =>
   });
 export const deleteCar = (id: number) => api.delete(`/cars/${id}`);
 
+// PARTS
+export const getParts = () => api.get<Part[]>('/parts');
+export const addPart = (formData: FormData) =>
+  api.post<Part>('/parts', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+export const deletePart = (id: number) => api.delete(`/parts/${id}`);

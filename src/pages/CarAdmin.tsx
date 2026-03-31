@@ -12,7 +12,7 @@ export default function CarAdmin() {
 
   return (
     <div className="container mx-auto p-6 space-y-8">
-      <h1 className="text-3xl font-bold mb-6">Admin page</h1>
+      <h1 className="text-3xl font-bold mb-6">Admin car page</h1>
 
       {/* Main form section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
