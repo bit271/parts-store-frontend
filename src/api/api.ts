@@ -36,7 +36,7 @@ export interface Part {
   price: number;
   catalogNum: string;
   description: string;
-  image?: File;
+  imageUrl?: string;
 }
 
 // Create single axios instance
